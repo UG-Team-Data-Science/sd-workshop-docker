@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  comfyui:
+    image: ghcr.io/ai-dock/comfyui:latest-cuda 
+    
+    volumes:
+      - /media/storage_michiel/sd-workshop:${WORKSPACE:/workspace}:rshared
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+    environment:
+      # Don't enclose values in quotes
+      - COMFYUI_BRANCH=${COMFYUI_BRANCH:-master}
+      - AUTO_UPDATE=${AUTO_UPDATE:-true}
+      - COMFYUI_FLAGS=${COMFYUI_FLAGS:-}
+      - COMFYUI_PORT=${COMFYUI_PORT:-8188}
+      - JUPYTER_MODE=${JUPYTER_MODE:-lab}
+      - DIRECT_ADDRESS=${DIRECT_ADDRESS:-127.0.0.1}
+      - DIRECT_ADDRESS_GET_WAN=${DIRECT_ADDRESS_GET_WAN:-false}
+      - SSH_PORT=${SSH_PORT:-22}
+      - WORKSPACE=${WORKSPACE:-/workspace}
+      - WORKSPACE_SYNC=${WORKSPACE_SYNC:-true}
+      - CF_TUNNEL_TOKEN=${CF_TUNNEL_TOKEN:-}
+      - CF_QUICK_TUNNELS=false
+      - WEB_ENABLE_AUTH=${WEB_ENABLE_AUTH:-true}
+      - WEB_USER=$WEB_USER
+      - WEB_PASSWORD=$WEB_PASSWORD
+      - SERVERLESS=${SERVERLESS:-false}
+      - PROVISIONING_SCRIPT=https://gist.github.com/michielree/c421bb146772f65070d2ac6c13194191/raw/322484a4092c8a31da7b6ad1e73b1cb8d2380d90/sd-workshop-provision.sh
